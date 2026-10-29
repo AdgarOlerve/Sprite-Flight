@@ -1,7 +1,9 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
+    public GameObject impactEffect;
     public float minSize = 0.5f;
     public float maxSize = 2f;
     public float minSpeed = 50f;
@@ -47,5 +49,12 @@ public class Obstacle : MonoBehaviour
         randomSpeed = Random.Range(minSpeed, maxSpeed); // ustaw losową prędkość z danego przedziału uzależnioną od wielkości.
         randomTorque = Random.Range(-maxSpinSpeed, maxSpinSpeed); // ustaw losową prędkość obrotu
         timeToNextPush = Random.Range(minTimeToNextPush, maxTimeToNextPush); //ustawia losowy czas do następnego "pchnięcia" obiektu.
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Vector2 contactPoint = collision.GetContact(0).point;
+        GameObject bounceEffect = Instantiate(impactEffect, contactPoint, Quaternion.identity);
+        Destroy(bounceEffect, 1f);
     }
 }

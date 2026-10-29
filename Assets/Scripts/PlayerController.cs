@@ -1,14 +1,18 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UIElements;
 public class PlayerController : MonoBehaviour
 {
     public UIDocument uIDocument;
     public GameObject boosterFlame;
+    public GameObject explosionEffect;
 
     private Label scoreText;
+    private Button restartButton;
+
     public float moveSpeed = 7f;
     public float maxSpeed = 15f;
     public bool godMode = false;
@@ -20,6 +24,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         scoreText = uIDocument.rootVisualElement.Q<Label>("ScoreLabel");
+        restartButton = uIDocument.rootVisualElement.Q<Button>("RestartButton");
+        restartButton.style.display = DisplayStyle.None; // ukrywa przycisk restart na czas gry.
+        restartButton.clicked += ReloadScene;
     }
 
     void Update()
@@ -35,6 +42,8 @@ public class PlayerController : MonoBehaviour
             if (collision.gameObject.CompareTag("Respawn"))
             {
                 Destroy(gameObject);
+                Instantiate(explosionEffect, transform.position,transform.rotation);
+                restartButton.style.display = DisplayStyle.Flex; //pokazuje przycisk restart na ekranie.
             }
         }
         
@@ -68,5 +77,9 @@ public class PlayerController : MonoBehaviour
         {
             boosterFlame.SetActive(false);
         }
+    }
+    void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
